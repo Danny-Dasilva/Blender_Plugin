@@ -25,11 +25,7 @@ bl_info = {
 import bpy
 
 from . test_op import Test_OT_Operator
-classes = ()
+from . test_panel import Test_PT_Panel
+classes = (Test_PT_Panel, Test_OT_Operator)  
 
 register, unregister = bpy.utils.register_classes_factory(classes)
-def register():
-    ...
-
-def unregister():
-    ...
