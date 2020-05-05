@@ -20,3 +20,9 @@ class Test_PT_Panel(bpy.types.Panel):
         row = box.row()
         row.operator("object.select_all").action = 'INVERT'
         row.operator("object.select_random")
+
+
+        box = layout.box()
+        box.label(text="Example menu")
+        obj = context.object
+        box.prop(obj, "select", text="aaaaa")
