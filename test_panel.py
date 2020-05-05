@@ -44,6 +44,10 @@ class MySettings(PropertyGroup):
         min = 0.01,
         max = 30.0
         )
+    my_string : StringProperty(
+        name = "Set a value",
+        description = "A float property",
+        )
 
 
 class SimpleOperator(bpy.types.Operator):
@@ -65,7 +69,7 @@ class Test_PT_Panel(bpy.types.Panel):
     bl_category = "Test Addon"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-
+    bpy.types.Scene.theChosenObject = bpy.props.StringProperty()
     def draw(self, context):
         # layout = self.layout
         # row = layout.row
@@ -104,6 +108,7 @@ class Test_PT_Panel(bpy.types.Panel):
         layout.prop(mytool, "my_bool", text="Bool Property")
         layout.prop(mytool, "my_int", text="Integer Property")
         layout.prop(mytool, "my_float", text="Float Property")
+        layout.prop(mytool, "my_string", text="Float Property")
 
         # check if bool property is enabled
         if (mytool.my_bool == True):
@@ -117,6 +122,11 @@ class Test_PT_Panel(bpy.types.Panel):
         # print(mytool.my_int, "int")
         # print(mytool.my_float, "float")
 
+
+
+
+        layout.prop_search(scene, "theChosenObject", scene, "objects")
+        # layout.prop_search(scene, "theChosenMaterial", bpy.data, "materials")
         # Big render button
         layout.label(text="Big Button:")
         row = layout.row()
