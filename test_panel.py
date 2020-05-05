@@ -69,7 +69,7 @@ class Test_PT_Panel(bpy.types.Panel):
     bl_category = "Test Addon"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bpy.types.Scene.theChosenObject = bpy.props.StringProperty()
+    bpy.types.Scene.theChosenObject = PointerProperty(type=bpy.types.Object)
     def draw(self, context):
         # layout = self.layout
         # row = layout.row
