@@ -23,9 +23,26 @@ bl_info = {
 }
 
 import bpy
-
+from bpy.props import PointerProperty
 from . test_op import Test_OT_Operator
-from . test_panel import Test_PT_Panel
-classes = (Test_PT_Panel, Test_OT_Operator)  
+from . test_panel import Test_PT_Panel, SimpleOperator, MySettings
+classes = (Test_PT_Panel, Test_OT_Operator, SimpleOperator, MySettings)  
 
-register, unregister = bpy.utils.register_classes_factory(classes)
+
+
+def register():
+    from bpy.utils import register_class
+    for cls in classes:
+        register_class(cls)
+
+    bpy.types.Scene.my_tool = PointerProperty(type=MySettings)
+
+def unregister():
+    from bpy.utils import unregister_class
+    for cls in reversed(classes):
+        unregister_class(cls)
+
+    del bpy.types.Scene.my_tool
+
+
+# register, unregister = bpy.utils.register_classes_factory(classes)

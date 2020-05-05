@@ -1,5 +1,63 @@
 import bpy
 
+from bpy.props import (StringProperty,
+                       BoolProperty,
+                       IntProperty,
+                       FloatProperty,
+                       FloatVectorProperty,
+                       EnumProperty,
+                       PointerProperty,
+                       )
+from bpy.types import (Panel,
+                       Operator,
+                       AddonPreferences,
+                       PropertyGroup,
+                       )
+
+
+def main(context):
+    for ob in context.scene.objects:
+        print(ob)
+
+
+
+class MySettings(PropertyGroup):
+
+    my_bool : BoolProperty(
+        name="Enable or Disable",
+        description="A bool property",
+        default = False
+        )
+
+    my_int : IntProperty(
+        name = "Set a value",
+        description="A integer property",
+        default = 23,
+        min = 10,
+        max = 100
+        )
+
+    my_float : FloatProperty(
+        name = "Set a value",
+        description = "A float property",
+        default = 23.7,
+        min = 0.01,
+        max = 30.0
+        )
+
+
+class SimpleOperator(bpy.types.Operator):
+    """Tooltip"""
+    bl_idname = "object.simple_operator"
+    bl_label = "Simple Object Operator"
+
+    @classmethod
+    def poll(cls, context):
+        return context.active_object is not None
+
+    def execute(self, context):
+        main(context)
+        return {'FINISHED'}
 
 class Test_PT_Panel(bpy.types.Panel):
     bl_idname = "Test+_PT_Panel"
@@ -13,16 +71,65 @@ class Test_PT_Panel(bpy.types.Panel):
         # row = layout.row
         #
         layout = self.layout
-        layout.operator('view3d.cursor_center', text="Center 3D cursor")
-        box = layout.box()
-        box.label(text="Selection Tools")
-        box.operator("object.select_all").action = 'TOGGLE'
-        row = box.row()
-        row.operator("object.select_all").action = 'INVERT'
-        row.operator("object.select_random")
+        scene = context.scene
+        mytool = scene.my_tool
 
 
-        box = layout.box()
-        box.label(text="Example menu")
-        obj = context.object
-        box.prop(obj, "select", text="aaaaa")
+        # Create a simple row.
+        layout.label(text=" Simple Row:")
+
+        row = layout.row()
+        row.prop(scene, "frame_start")
+        row.prop(scene, "frame_end")
+
+
+        # Create two columns, by using a split layout.
+        split = layout.split()
+
+        # First column
+        col = split.column()
+        col.label(text="Column One:")
+        col.prop(scene, "frame_end")
+        col.prop(scene, "frame_start")
+
+        # Second column, aligned
+        col = split.column(align=True)
+        col.label(text="Column Two:")
+        col.prop(scene, "frame_start")
+        col.prop(scene, "frame_end")
+       
+
+
+        # display the properties
+        layout.prop(mytool, "my_bool", text="Bool Property")
+        layout.prop(mytool, "my_int", text="Integer Property")
+        layout.prop(mytool, "my_float", text="Float Property")
+
+        # check if bool property is enabled
+        if (mytool.my_bool == True):
+            print ("Property Enabled")
+        else:
+            print ("Property Disabled")
+
+
+
+
+        # print(mytool.my_int, "int")
+        # print(mytool.my_float, "float")
+
+        # Big render button
+        layout.label(text="Big Button:")
+        row = layout.row()
+        row.scale_y = 3.0
+        row.operator("object.simple_operator")
+
+        # Different sizes in a row
+        layout.label(text="Different button sizes:")
+        row = layout.row(align=True)
+        row.operator("render.render")
+
+        sub = row.row()
+        sub.scale_x = 2.0
+        sub.operator("render.render")
+
+        row.operator("render.render")
